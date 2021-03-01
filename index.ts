@@ -1,3 +1,3 @@
-import whatToSay from "./lib/word";
+import startServer from "./lib/webserver/server";
 
-console.log(`${whatToSay}`);
+startServer();
