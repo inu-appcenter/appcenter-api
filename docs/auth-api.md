@@ -70,3 +70,9 @@ curl -X POST -d "id=학번&password=비밀번호" https://api.inuappcenter.kr/au
 | 401(로그인 실패)          | `{"message": "요청이 망한 이유"}`                                        |                                                       |
 
 > 응답의 Content-Type은 `application/json`입니다.
+
+### 테스트
+
+~~~bash
+curl -X GET -H "Authorization: Bearer {발급받은 accessToken}" https://api.inuappcenter.kr/auth/session
+~~~
