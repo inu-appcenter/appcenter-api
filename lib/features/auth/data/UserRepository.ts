@@ -1,10 +1,14 @@
+import array from "../../../utils/array";
+import assertions from "../../../utils/assertions";
+import RemoteLoginSource from "./RemoteLoginSource"
 import lmsRemoteLoginSource from "./LmsRemoteLoginSource";
 import studyRemoteLoginSource from "./StudyRemoteLoginSource";
+import logger from "../../../logging/logger";
 
 class UserRepository {
-    remotes: RemoteLoginSource[];
+    constructor(private readonly remotes: RemoteLoginSource[]) {
+        assertions.arrayShouldNotBeEmpty(remotes);
 
-    constructor({remotes}: {remotes: RemoteLoginSource[]}) {
         this.remotes = remotes;
     }
 
@@ -14,9 +18,18 @@ class UserRepository {
      * @param password
      */
     async checkIfUserHasValidUnivAccount(id: string, password: string): Promise<boolean> {
-        const loginSource = this.pickLoginSource();
+        logger.verbose(`${id}씨가 포탈에 로그인할 수 있는지 확인합니다.`);
 
-        return loginSource.tryLogin(id, password);
+        const loginSource = this.pickLoginSource();
+        const result = await loginSource.tryLogin(id, password);
+
+        if (result) {
+            logger.verbose(`${id}씨 계정으로 포탈에 로그인하는 데에 성공했습니다.`);
+        } else {
+            logger.verbose(`${id}씨 계정으로는 포탈에 로그인할 수 없습니다.`);
+        }
+
+        return result;
     }
 
     /**
@@ -24,16 +37,18 @@ class UserRepository {
      * @private
      */
     private pickLoginSource(): RemoteLoginSource {
-        return this.remotes[0];
+        const picked = array.randomPick(this.remotes);
+
+        logger.debug(`원격 로그인 소스 중 ${picked.constructor.name}를 사용합니다.`);
+
+        return array.randomPick(this.remotes);
     }
 }
 
-const userRepository = new UserRepository({
-    remotes: [
-        lmsRemoteLoginSource,
-        studyRemoteLoginSource
-        // 포털은 API 엿같애서 안해요!
-    ]
-});
+const userRepository = new UserRepository([
+    lmsRemoteLoginSource,
+    studyRemoteLoginSource
+    // 포털은 API 엿같애서 안해요!
+]);
 
 export default userRepository;

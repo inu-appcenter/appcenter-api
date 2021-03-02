@@ -1,5 +1,7 @@
 import fetch from "node-fetch";
 import config from "../../../../config";
+import RemoteLoginSource from "./RemoteLoginSource";
+import logger from "../../../logging/logger";
 
 /**
  * 이러닝

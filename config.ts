@@ -8,5 +8,13 @@ export default {
     remoteLoginSource: {
         lms: 'https://cyber.inu.ac.kr/login/index.php',
         study: 'https://ok.inu.ac.kr/learning/ability/wp-login.php'
+    },
+
+    server: {
+        port: 3000
+    },
+
+    log: {
+        level: 'debug'
     }
 }
